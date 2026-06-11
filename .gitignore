@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.chrome-cdp-profile*/
+.edge-shot-*/
+.review/
+tmp-*.png
+review-*.png

@@ -1,0 +1,24 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="assetGradient" x1="18" y1="18" x2="78" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101716"/>
+      <stop offset="0.58" stop-color="#172123"/>
+      <stop offset="1" stop-color="#0F5F79"/>
+    </linearGradient>
+    <linearGradient id="orbitGradient" x1="18" y1="76" x2="82" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#43ACB7"/>
+      <stop offset="1" stop-color="#CFF4F1"/>
+    </linearGradient>
+    <mask id="lensCut">
+      <rect width="96" height="96" fill="white"/>
+      <ellipse cx="49" cy="49" rx="15.5" ry="15" fill="black"/>
+      <path d="M49 30L52.9 45.1L68 49L52.9 52.9L49 68L45.1 52.9L30 49L45.1 45.1L49 30Z" fill="black"/>
+      <circle cx="68.5" cy="23.5" r="7.5" fill="black"/>
+    </mask>
+  </defs>
+  <path d="M48.8 9.5C63.9 9.5 77.5 18.7 83.1 32.9C88.8 47.4 84.3 64.3 71.9 75C59.8 85.5 42.5 87.5 28.2 79.9C14.3 72.6 7.3 57.7 10.7 43.7C13.4 32.2 23.7 24.5 36.6 23.3C38.5 14.7 42.1 9.5 48.8 9.5Z" fill="url(#assetGradient)" mask="url(#lensCut)"/>
+  <path d="M17 60.2C28.6 81.9 61.4 88 79.4 66.6" stroke="url(#orbitGradient)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M72 18.2C77.9 22.1 81.7 27.7 84 35" stroke="#43ACB7" stroke-width="5.5" stroke-linecap="round"/>
+  <circle cx="68.5" cy="23.5" r="4" fill="#43ACB7"/>
+  <circle cx="49" cy="49" r="5" fill="#FFFDF7"/>
+</svg>
