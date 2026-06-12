@@ -25,12 +25,15 @@ Write-Step "Checking repository"
 $repoFullName = "$Owner/$Repo"
 gh repo view $repoFullName *> $null
 if ($LASTEXITCODE -ne 0) {
-  gh repo create $repoFullName "--$Visibility" --source . --remote origin
+  gh repo create $repoFullName "--$Visibility" --source . --remote origin --push
 } else {
   $origin = git remote get-url origin 2>$null
   if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($origin)) {
     git remote add origin "https://github.com/$repoFullName.git"
+  } else {
+    git remote set-url origin "https://github.com/$repoFullName.git"
   }
+  git push -u origin main
 }
 
 Write-Step "Enabling GitHub Pages"
@@ -40,8 +43,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Step "Triggering deployment"
-git push -u origin main
+gh workflow run deploy-pages.yml --repo $repoFullName --ref main
 
 Write-Host ""
 Write-Host "Repository: https://github.com/$repoFullName"
 Write-Host "Website:    https://$Owner.github.io/$Repo/"
+Write-Host "Deployment usually becomes available after 1-3 minutes."
