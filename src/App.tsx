@@ -1366,7 +1366,7 @@ function App() {
       <header className="topbar">
         <a className="brand-mark" href="#top" aria-label="Andy D Digital Asset Lab">
           <span className="brand-logo">
-            <img src="./andy-d-symbol.svg" alt="" />
+            <img src="./andy-d-symbol.png?v=1" alt="" />
           </span>
           <span className="brand-code">ADB</span>
           <small>VALUE CHAIN</small>
