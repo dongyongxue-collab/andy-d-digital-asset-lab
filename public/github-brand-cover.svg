@@ -1,0 +1,82 @@
+<svg width="1440" height="720" viewBox="0 0 1440 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Andy D Personal Brand Asset System</title>
+  <desc id="desc">A professional brand cover presenting Andy D as a personal brand and digital asset system.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1440" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8F5EC"/>
+      <stop offset="0.54" stop-color="#EEF0E8"/>
+      <stop offset="1" stop-color="#E6ECE9"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1090 300) rotate(128) scale(420 420)">
+      <stop stop-color="#DDEEEB" stop-opacity="0.95"/>
+      <stop offset="0.6" stop-color="#ECF1EA" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#F8F5EC" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="teal" x1="840" y1="190" x2="1135" y2="475" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E6E82"/>
+      <stop offset="1" stop-color="#173F43"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="32" flood-color="#1C211F" flood-opacity="0.16"/>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#1C211F" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="720" fill="url(#bg)"/>
+  <rect width="1440" height="720" fill="url(#grid)"/>
+  <circle cx="1090" cy="300" r="420" fill="url(#halo)"/>
+  <path d="M-80 590C155 470 292 440 496 482C731 531 900 520 1185 352C1294 288 1394 250 1518 245" stroke="#0E6E82" stroke-opacity="0.13" stroke-width="2"/>
+  <path d="M-40 210C185 138 390 168 566 250C742 333 890 363 1105 252C1222 192 1330 174 1498 205" stroke="#1C211F" stroke-opacity="0.09" stroke-width="1.5"/>
+
+  <g transform="translate(92 86)">
+    <text x="0" y="0" fill="#0E6E82" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="8">ADB VALUE CHAIN</text>
+    <text x="0" y="96" fill="#18201D" font-family="Inter, Arial, sans-serif" font-size="76" font-weight="850" letter-spacing="-1">
+      Andy D
+    </text>
+    <text x="0" y="170" fill="#18201D" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="760" letter-spacing="-0.7">
+      Personal Brand Asset System
+    </text>
+    <text x="0" y="232" fill="#5F6862" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="500">
+      Brand Strategy · Circular Economy · AI Agents · Digital Assets
+    </text>
+    <text x="0" y="288" fill="#3D4742" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500">
+      Turning identity, achievements, channels, data and IP into a measurable,
+    </text>
+    <text x="0" y="322" fill="#3D4742" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500">
+      brandable and compounding personal value infrastructure.
+    </text>
+
+    <g transform="translate(0 388)">
+      <rect x="0" y="0" width="154" height="66" rx="33" fill="#FFFFFF" fill-opacity="0.62" stroke="#D4D9D0"/>
+      <text x="30" y="41" fill="#173F43" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800">20Y+</text>
+      <rect x="174" y="0" width="168" height="66" rx="33" fill="#FFFFFF" fill-opacity="0.62" stroke="#D4D9D0"/>
+      <text x="204" y="41" fill="#173F43" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800">300B+</text>
+      <rect x="362" y="0" width="188" height="66" rx="33" fill="#FFFFFF" fill-opacity="0.62" stroke="#D4D9D0"/>
+      <text x="392" y="41" fill="#173F43" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800">30,000T+</text>
+      <rect x="570" y="0" width="154" height="66" rx="33" fill="#FFFFFF" fill-opacity="0.62" stroke="#D4D9D0"/>
+      <text x="600" y="41" fill="#173F43" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800">10M+</text>
+    </g>
+  </g>
+
+  <g transform="translate(850 118)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="438" height="438" rx="92" fill="#FFFFFF" fill-opacity="0.64" stroke="#D4D9D0"/>
+    <circle cx="219" cy="219" r="148" fill="#0C1112"/>
+    <path d="M219 82C291 82 347 136 356 204C280 159 193 149 112 181C128 123 170 82 219 82Z" fill="#24A9C5"/>
+    <path d="M351 222C351 294 298 350 229 359C276 286 288 200 257 117C315 132 351 173 351 222Z" fill="#6FAF62"/>
+    <path d="M218 356C147 356 91 303 82 234C155 280 241 291 323 260C309 318 268 356 218 356Z" fill="#1595AF"/>
+    <path d="M84 218C84 148 137 91 206 82C159 155 148 241 179 323C121 309 84 268 84 218Z" fill="#78BE70"/>
+    <circle cx="219" cy="219" r="86" fill="#070B0C"/>
+    <circle cx="219" cy="219" r="62" fill="url(#teal)" opacity="0.32"/>
+    <path d="M219 155L232 206L283 219L232 232L219 283L206 232L155 219L206 206L219 155Z" fill="#E9FFFF"/>
+    <circle cx="243" cy="172" r="20" fill="#FFFFFF" opacity="0.75"/>
+  </g>
+
+  <g transform="translate(846 594)">
+    <text x="0" y="0" fill="#8B938E" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="5">ASSET CLASSES</text>
+    <text x="0" y="42" fill="#27302B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="650">
+      Identity · Brand · Industry · Channel · Data · AI · Content · Investment
+    </text>
+  </g>
+</svg>
