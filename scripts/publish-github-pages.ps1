@@ -29,7 +29,7 @@ function Invoke-QuietGh {
 
 Write-Step "Checking GitHub login"
 if ((Invoke-QuietGh auth status) -ne 0) {
-  gh auth login --web --git-protocol https
+  gh auth login --web --clipboard --git-protocol https
 }
 
 Write-Step "Building site"
