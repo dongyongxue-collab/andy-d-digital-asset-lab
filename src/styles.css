@@ -39,6 +39,7 @@
 html {
   background: var(--paper);
   scroll-behavior: auto;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -50,6 +51,7 @@ body {
     radial-gradient(circle at 12% 78%, rgba(169, 141, 82, 0.13), transparent 34%),
     linear-gradient(135deg, #fbf8f0 0%, #f2efe6 48%, #e8e6da 100%);
   overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 body,
@@ -3289,6 +3291,31 @@ h3 {
 }
 
 @media (max-width: 980px) {
+  .scene,
+  .content,
+  .proof-grid,
+  .cases-heading {
+    perspective: none;
+  }
+
+  .stat-card,
+  .asset-specimen,
+  .proof-card,
+  .venture-card,
+  .role-card,
+  .skill-card,
+  .timeline-item,
+  .case-index,
+  .qr-specimen {
+    transform: none !important;
+    will-change: auto;
+    backface-visibility: visible;
+  }
+
+  .starepoch-intro {
+    display: none !important;
+  }
+
   .topbar {
     top: 12px;
     left: 12px;

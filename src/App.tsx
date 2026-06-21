@@ -37,6 +37,10 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+const mobileMotionQuery = "(max-width: 980px), (pointer: coarse)";
+const isMobileMotionDevice = () =>
+  typeof window !== "undefined" && window.matchMedia(mobileMotionQuery).matches;
+
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
 const inkDropPaths = {
@@ -346,7 +350,9 @@ function useMotionSystem(setProgress: (progress: number) => void) {
   useEffect(() => {
     const shell = document.querySelector<HTMLElement>(".app-shell");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const canSmoothScroll = !reduceMotion && window.matchMedia("(pointer: fine) and (min-width: 900px)").matches;
+    const stableMobileMotion = isMobileMotionDevice();
+    const lightMotion = reduceMotion || stableMobileMotion;
+    const canSmoothScroll = !lightMotion && window.matchMedia("(pointer: fine) and (min-width: 900px)").matches;
     let progressFrame = 0;
     let latestProgress = 0;
     let lastSyncedProgress = 0;
@@ -420,7 +426,7 @@ function useMotionSystem(setProgress: (progress: number) => void) {
           trigger: ".story",
           start: "top top",
           end: "bottom bottom",
-          scrub: reduceMotion ? false : 0.86,
+          scrub: lightMotion ? false : 0.86,
           onUpdate: (self) => syncProgress(self.progress)
         }
       });
@@ -554,96 +560,113 @@ function useMotionSystem(setProgress: (progress: number) => void) {
 
       master.to(".portrait-card", { yPercent: 5, scale: 0.985, force3D: true }, 0);
 
-      gsap.set(".reveal", { autoAlpha: 0, y: 34, force3D: true });
-      gsap.set(".hero-scene .reveal", { autoAlpha: 1, y: 0, force3D: true });
-      gsap.set(cardSelector, {
-        autoAlpha: 0,
-        x: (index) => [-180, 190, -120, 140, 0, -90, 110][index % 7],
-        y: (index) => [-90, 76, 132, -120, 160, -64, 96][index % 7],
-        z: (index) => [-240, -160, -320, -110, -260][index % 5],
-        rotationX: (index) => [26, -18, 32, -24, 14][index % 5],
-        rotationY: (index) => [-34, 28, -18, 36, -26, 16][index % 6],
-        rotationZ: (index) => [-8, 6, -4, 9, -6, 4][index % 6],
-        scale: 0.72,
-        transformOrigin: "50% 55%",
-        force3D: true
-      });
+      if (lightMotion) {
+        gsap.set(".reveal", { autoAlpha: 1, y: 0, clearProps: "transform" });
+        gsap.set(cardSelector, {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          z: 0,
+          rotationX: 0,
+          rotationY: 0,
+          rotationZ: 0,
+          scale: 1,
+          clearProps: "transform"
+        });
+      } else {
+        gsap.set(".reveal", { autoAlpha: 0, y: 34, force3D: true });
+        gsap.set(".hero-scene .reveal", { autoAlpha: 1, y: 0, force3D: true });
+        gsap.set(cardSelector, {
+          autoAlpha: 0,
+          x: (index) => [-180, 190, -120, 140, 0, -90, 110][index % 7],
+          y: (index) => [-90, 76, 132, -120, 160, -64, 96][index % 7],
+          z: (index) => [-240, -160, -320, -110, -260][index % 5],
+          rotationX: (index) => [26, -18, 32, -24, 14][index % 5],
+          rotationY: (index) => [-34, 28, -18, 36, -26, 16][index % 6],
+          rotationZ: (index) => [-8, 6, -4, 9, -6, 4][index % 6],
+          scale: 0.72,
+          transformOrigin: "50% 55%",
+          force3D: true
+        });
+      }
       gsap.set(".timeline-progress", { scaleY: 0, transformOrigin: "top center" });
 
-      ScrollTrigger.batch(".reveal", {
-        start: "top 84%",
-        end: "bottom 12%",
-        interval: 0.08,
-        batchMax: 6,
-        onEnter: (batch) => {
-          gsap.to(batch, {
-            autoAlpha: 1,
-            y: 0,
-            duration: reduceMotion ? 0.01 : 1.05,
-            ease: "power3.out",
-            stagger: { each: 0.045, from: "start" },
-            overwrite: "auto"
-          });
-        },
-        onEnterBack: (batch) => {
-          gsap.to(batch, {
-            autoAlpha: 1,
-            y: 0,
-            duration: reduceMotion ? 0.01 : 0.62,
-            ease: "power2.out",
-            stagger: 0.025,
-            overwrite: "auto"
-          });
-        },
-        onLeaveBack: (batch) => {
-          gsap.to(batch, {
-            autoAlpha: 0,
-            y: 30,
-            duration: reduceMotion ? 0.01 : 0.42,
-            ease: "power2.out",
-            stagger: 0.018,
-            overwrite: "auto"
-          });
-        }
-      });
+      if (!lightMotion) {
+        ScrollTrigger.batch(".reveal", {
+          start: "top 84%",
+          end: "bottom 12%",
+          interval: 0.08,
+          batchMax: 6,
+          onEnter: (batch) => {
+            gsap.to(batch, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 1.05,
+              ease: "power3.out",
+              stagger: { each: 0.045, from: "start" },
+              overwrite: "auto"
+            });
+          },
+          onEnterBack: (batch) => {
+            gsap.to(batch, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.62,
+              ease: "power2.out",
+              stagger: 0.025,
+              overwrite: "auto"
+            });
+          },
+          onLeaveBack: (batch) => {
+            gsap.to(batch, {
+              autoAlpha: 0,
+              y: 30,
+              duration: 0.42,
+              ease: "power2.out",
+              stagger: 0.018,
+              overwrite: "auto"
+            });
+          }
+        });
 
-      ScrollTrigger.batch(cardSelector, {
-        start: "top 88%",
-        interval: 0.08,
-        batchMax: 8,
-        onEnter: (batch) => {
-          gsap.to(batch, {
-            autoAlpha: 1,
-            x: 0,
-            y: 0,
-            z: 0,
-            rotationX: 0,
-            rotationY: 0,
-            rotationZ: 0,
-            scale: 1,
-            duration: reduceMotion ? 0.01 : 1.18,
-            ease: "expo.out",
-            stagger: { each: 0.055, from: "random" },
-            overwrite: "auto"
-          });
-        },
-        onEnterBack: (batch) => {
-          gsap.to(batch, {
-            autoAlpha: 1,
-            x: 0,
-            y: 0,
-            z: 0,
-            rotationX: 0,
-            rotationY: 0,
-            rotationZ: 0,
-            scale: 1,
-            duration: reduceMotion ? 0.01 : 0.72,
-            ease: "power3.out",
-            stagger: { each: 0.03, from: "edges" },
-            overwrite: "auto"
-          });
-        }
-      });
+        ScrollTrigger.batch(cardSelector, {
+          start: "top 88%",
+          interval: 0.08,
+          batchMax: 8,
+          onEnter: (batch) => {
+            gsap.to(batch, {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              z: 0,
+              rotationX: 0,
+              rotationY: 0,
+              rotationZ: 0,
+              scale: 1,
+              duration: 1.18,
+              ease: "expo.out",
+              stagger: { each: 0.055, from: "random" },
+              overwrite: "auto"
+            });
+          },
+          onEnterBack: (batch) => {
+            gsap.to(batch, {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              z: 0,
+              rotationX: 0,
+              rotationY: 0,
+              rotationZ: 0,
+              scale: 1,
+              duration: 0.72,
+              ease: "power3.out",
+              stagger: { each: 0.03, from: "edges" },
+              overwrite: "auto"
+            });
+          }
+        });
+      }
 
       gsap.fromTo(
         ".portrait-card",
@@ -653,7 +676,7 @@ function useMotionSystem(setProgress: (progress: number) => void) {
           y: 0,
           scale: 1,
           rotation: 0,
-          duration: reduceMotion ? 0.01 : 1.2,
+          duration: lightMotion ? 0.01 : 1.2,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".hero-scene",
@@ -670,11 +693,11 @@ function useMotionSystem(setProgress: (progress: number) => void) {
           trigger: ".timeline",
           start: "top 72%",
           end: "bottom 42%",
-          scrub: reduceMotion ? false : 0.55
+          scrub: lightMotion ? false : 0.55
         }
       });
 
-      if (!reduceMotion) {
+      if (!lightMotion) {
         gsap.to(".ip-inline-badge img", {
           y: -5,
           rotation: 2.4,
@@ -692,13 +715,13 @@ function useMotionSystem(setProgress: (progress: number) => void) {
           { "--section-light": 0 } as gsap.TweenVars,
           {
             "--section-light": 1,
-            duration: reduceMotion ? 0.01 : 1,
+            duration: lightMotion ? 0.01 : 1,
             ease: "none",
             scrollTrigger: {
               trigger: scene,
               start: "top 72%",
               end: "bottom 28%",
-              scrub: reduceMotion ? false : 0.8
+              scrub: lightMotion ? false : 0.8
             }
           } as gsap.TweenVars
         );
@@ -1131,15 +1154,17 @@ function EncodedCard({
 function App() {
   const [lang, setLang] = useState<Lang>("en");
   const [progress, setProgress] = useState(0);
-  const [starepochIntroStarted, setStarepochIntroStarted] = useState(false);
-  const [starepochIntroComplete, setStarepochIntroComplete] = useState(false);
+  const [mobileMotion] = useState(() => isMobileMotionDevice());
+  const [starepochIntroStarted, setStarepochIntroStarted] = useState(() => mobileMotion);
+  const [starepochIntroComplete, setStarepochIntroComplete] = useState(() => mobileMotion);
   const starepochVideoRef = useRef<HTMLVideoElement | null>(null);
   const activeStage = useActiveStage();
   useMotionSystem(setProgress);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) {
+    if (reduceMotion || mobileMotion) {
+      setStarepochIntroStarted(true);
       setStarepochIntroComplete(true);
       return;
     }
@@ -1159,7 +1184,7 @@ function App() {
 
     observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, [mobileMotion]);
 
   useEffect(() => {
     if (!starepochIntroStarted || starepochIntroComplete) return;
@@ -1183,6 +1208,7 @@ function App() {
     if (!wraps.length) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lightMotion = reduceMotion || mobileMotion;
     const cleanupHandlers: Array<() => void> = [];
 
     wraps.forEach((wrap) => {
@@ -1190,6 +1216,18 @@ function App() {
       if (!pills.length) return;
 
       gsap.killTweensOf(pills);
+      if (lightMotion) {
+        gsap.set(pills, {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+          clearProps: "transform"
+        });
+        return;
+      }
+
       gsap.set(pills, {
         autoAlpha: 0,
         x: (index) => [-210, 180, -145, 160, -115, 135, -90, 110][index % 8],
@@ -1207,15 +1245,15 @@ function App() {
           y: 0,
           scale: 1,
           rotation: 0,
-          delay: reduceMotion ? 0 : 0.16,
-          duration: reduceMotion ? 0.01 : 1.05,
+          delay: 0.16,
+          duration: 1.05,
           ease: "expo.out",
           stagger: { amount: 0.58, from: "center" },
           overwrite: "auto"
         });
       }
 
-      if (!starepochIntroComplete || reduceMotion) return;
+      if (!starepochIntroComplete) return;
 
       const xTo = pills.map((pill) => gsap.quickTo(pill, "x", { duration: 0.42, ease: "power3.out" }));
       const yTo = pills.map((pill) => gsap.quickTo(pill, "y", { duration: 0.42, ease: "power3.out" }));
@@ -1270,7 +1308,7 @@ function App() {
     return () => {
       cleanupHandlers.forEach((cleanup) => cleanup());
     };
-  }, [lang, starepochIntroComplete]);
+  }, [lang, mobileMotion, starepochIntroComplete]);
 
   const copy = pageCopy[lang];
   const text = (value: Copy) => value[lang];
@@ -1559,18 +1597,20 @@ function App() {
           }`}
           id="starepoch"
         >
-          <div className="starepoch-intro" aria-hidden={starepochIntroComplete}>
-            <video
-              ref={starepochVideoRef}
-              className="starepoch-intro-video"
-              src="./top-banner-motion.mp4"
-              poster="./top-banner-frame.jpg"
-              muted
-              playsInline
-              preload="auto"
-              onEnded={() => setStarepochIntroComplete(true)}
-            />
-          </div>
+          {!starepochIntroComplete ? (
+            <div className="starepoch-intro" aria-hidden={starepochIntroComplete}>
+              <video
+                ref={starepochVideoRef}
+                className="starepoch-intro-video"
+                src="./top-banner-motion.mp4"
+                poster="./top-banner-frame.jpg"
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => setStarepochIntroComplete(true)}
+              />
+            </div>
+          ) : null}
           <div className="content starepoch-layout">
             <div className="starepoch-copy">
               <div className="section-heading reveal">
