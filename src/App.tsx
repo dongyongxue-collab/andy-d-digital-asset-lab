@@ -346,6 +346,50 @@ const pageCopy = {
   }
 } satisfies Record<Lang, Record<string, string | string[]>>;
 
+function useMobilePullRefreshGuard() {
+  useEffect(() => {
+    if (!isMobileMotionDevice()) return;
+
+    let startX = 0;
+    let startY = 0;
+
+    const getScrollRoot = () => document.scrollingElement ?? document.documentElement;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
+      if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+
+      const root = getScrollRoot();
+      const scrollTop = root.scrollTop;
+      const maxScroll = root.scrollHeight - window.innerHeight;
+      const pullingPastTop = scrollTop <= 0 && deltaY > 0;
+      const pullingPastBottom = scrollTop >= maxScroll - 1 && deltaY < 0;
+
+      if (pullingPastTop || pullingPastBottom) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, []);
+}
+
 function useMotionSystem(setProgress: (progress: number) => void) {
   useEffect(() => {
     const shell = document.querySelector<HTMLElement>(".app-shell");
@@ -394,6 +438,38 @@ function useMotionSystem(setProgress: (progress: number) => void) {
       const nativeProgress = Math.min(1, Math.max(0, root.scrollTop / maxScroll));
       syncProgress(nativeProgress);
     };
+
+    if (lightMotion) {
+      const ctx = gsap.context(() => {
+        const cardSelector = ".stat-card, .asset-specimen, .proof-card, .venture-card, .timeline-item, .role-card, .skill-card, .case-index, .qr-specimen";
+        gsap.set(".reveal, .portrait-card", { autoAlpha: 1, y: 0, scale: 1, rotation: 0, clearProps: "transform" });
+        gsap.set(cardSelector, {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          z: 0,
+          rotationX: 0,
+          rotationY: 0,
+          rotationZ: 0,
+          scale: 1,
+          clearProps: "transform"
+        });
+        gsap.set(".timeline-progress", { scaleY: 1, transformOrigin: "top center" });
+      });
+
+      window.addEventListener("scroll", syncFromNativeScroll, { passive: true });
+      window.addEventListener("orientationchange", syncFromNativeScroll);
+      const initialSync = window.setTimeout(syncFromNativeScroll, 120);
+      window.requestAnimationFrame(syncFromNativeScroll);
+
+      return () => {
+        window.clearTimeout(initialSync);
+        if (progressFrame) window.cancelAnimationFrame(progressFrame);
+        window.removeEventListener("scroll", syncFromNativeScroll);
+        window.removeEventListener("orientationchange", syncFromNativeScroll);
+        ctx.revert();
+      };
+    }
 
     if (canSmoothScroll) {
       lenis = new Lenis({
@@ -831,6 +907,42 @@ function useActiveStage() {
 
   useEffect(() => {
     const sectionIds = ["top", "signals", "assets", "cases", "capital", "trust", "research", "skills", "starepoch", "contact"];
+    if (isMobileMotionDevice()) {
+      let frame = 0;
+
+      const updateStage = () => {
+        frame = 0;
+        const midpoint = window.innerHeight * 0.5;
+        let nextStage = 0;
+
+        sectionIds.forEach((id, index) => {
+          const element = document.getElementById(id);
+          if (!element) return;
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= midpoint) {
+            nextStage = index;
+          }
+        });
+
+        setActiveStage((current) => (current === nextStage ? current : nextStage));
+      };
+
+      const requestUpdate = () => {
+        if (frame) return;
+        frame = window.requestAnimationFrame(updateStage);
+      };
+
+      window.addEventListener("scroll", requestUpdate, { passive: true });
+      window.addEventListener("orientationchange", requestUpdate);
+      updateStage();
+
+      return () => {
+        if (frame) window.cancelAnimationFrame(frame);
+        window.removeEventListener("scroll", requestUpdate);
+        window.removeEventListener("orientationchange", requestUpdate);
+      };
+    }
+
     const triggers = sectionIds
       .map((id, index) => {
         const element = document.getElementById(id);
@@ -1159,6 +1271,7 @@ function App() {
   const [starepochIntroComplete, setStarepochIntroComplete] = useState(() => mobileMotion);
   const starepochVideoRef = useRef<HTMLVideoElement | null>(null);
   const activeStage = useActiveStage();
+  useMobilePullRefreshGuard();
   useMotionSystem(setProgress);
 
   useEffect(() => {
