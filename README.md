@@ -1,5 +1,11 @@
 ![Andy D Personal Brand Asset System](./public/github-brand-cover.svg)
 
+<p align="center">
+  <a href="https://dongyongxue-collab.github.io/andy-d-digital-asset-lab/"><strong>Live Website</strong></a>
+  ·
+  <a href="https://github.com/dongyongxue-collab/andy-d-digital-asset-lab"><strong>GitHub Repository</strong></a>
+</p>
+
 # Andy D | Personal Brand Asset System
 
 **Andy D / Dong Yunhe** is a multidisciplinary brand strategist, circular-economy operator, AI application practitioner and personal-IP architect. This repository presents his personal brand as a structured digital asset system rather than a conventional resume.

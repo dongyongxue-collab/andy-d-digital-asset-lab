@@ -620,33 +620,14 @@ img {
   filter: saturate(0.96);
 }
 
-.ink-scroll-field {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
+.ink-scroll-field,
+.ink-scroll-video,
+.fluid-velocity,
+.ink-video-object,
+.ink-drop-motion {
+  display: none !important;
+  opacity: 0 !important;
   pointer-events: none;
-}
-
-.ink-scroll-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(52vw, 700px);
-  height: min(96vh, 1040px);
-  object-fit: contain;
-  object-position: center;
-  opacity: calc(var(--ink-visible, 0) * 0.52);
-  transform:
-    translate3d(calc(-50% + (var(--ink-p, 0) - 0.5) * 42vw), calc(-62% + var(--ink-p, 0) * 64vh), 0)
-    rotate(calc((var(--ink-p, 0) - 0.5) * 18deg))
-    scale(calc(1.08 + var(--ink-p, 0) * 0.22));
-  mix-blend-mode: multiply;
-  filter:
-    contrast(1.08)
-    saturate(0)
-    drop-shadow(0 30px 54px rgba(36, 36, 32, 0.12));
-  will-change: transform, opacity;
 }
 
 .starfall-prologue,
@@ -2838,10 +2819,17 @@ h3 {
   z-index: 1;
   display: grid;
   place-items: center;
+  overflow: hidden;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  isolation: isolate;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
   transform: scale(1.04);
+  contain: paint;
   transition:
     opacity 520ms ease,
     transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -2868,7 +2856,7 @@ h3 {
 .starepoch-intro::before,
 .starepoch-intro::after {
   position: absolute;
-  inset: 0;
+  inset: -10%;
   content: "";
   pointer-events: none;
 }
@@ -2891,14 +2879,21 @@ h3 {
 
 .starepoch-intro-video {
   position: absolute;
-  inset: -8%;
+  inset: -14%;
   z-index: 1;
-  width: 116%;
-  height: 116%;
+  width: 128%;
+  height: 128%;
   object-fit: cover;
-  opacity: 0.82;
-  filter: saturate(0.86) contrast(1.04) brightness(1.08);
-  transform: translate3d(0, calc(var(--sp) * -22px), 0) scale(1.04);
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  opacity: 0.74;
+  filter: saturate(0.78) contrast(1.02) brightness(1.12);
+  transform: translate3d(0, calc(var(--sp) * -18px), 0) scale(1.06);
+  mask-image: radial-gradient(ellipse 74% 82% at 55% 50%, #000 0 66%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 74% 82% at 55% 50%, #000 0 66%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .starepoch-copy {
@@ -3294,16 +3289,6 @@ h3 {
 }
 
 @media (max-width: 980px) {
-  .ink-scroll-video {
-    width: min(78vw, 460px);
-    height: min(84vh, 760px);
-    opacity: calc(var(--ink-visible, 0) * 0.42);
-    transform:
-      translate3d(calc(-50% + (var(--ink-p, 0) - 0.5) * 24vw), calc(-62% + var(--ink-p, 0) * 48vh), 0)
-      rotate(calc((var(--ink-p, 0) - 0.5) * 12deg))
-      scale(calc(0.98 + var(--ink-p, 0) * 0.18));
-  }
-
   .topbar {
     top: 12px;
     left: 12px;

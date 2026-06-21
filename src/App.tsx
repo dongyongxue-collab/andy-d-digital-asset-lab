@@ -351,9 +351,6 @@ function useMotionSystem(setProgress: (progress: number) => void) {
     let latestProgress = 0;
     let lastSyncedProgress = 0;
     let lastPercent = -1;
-    let inkVideo: HTMLVideoElement | null = null;
-    let inkTargetTime = 0;
-    let inkCurrentTime = 0;
     let lenis: Lenis | null = null;
 
     const syncProgress = (value: number) => {
@@ -365,28 +362,17 @@ function useMotionSystem(setProgress: (progress: number) => void) {
         const stageCount = 10;
         const stage = Math.min(stageCount - 1, Math.floor(latestProgress * stageCount));
         const stageProgress = latestProgress * stageCount - stage;
-        const inkProgress = Math.min(1, Math.max(0, (latestProgress - 0.055) / 0.885));
-        const inkVisible = Math.min(1, Math.max(0, (latestProgress - 0.045) / 0.09));
         const percent = Math.round(latestProgress * 100);
         lastSyncedProgress = latestProgress;
 
         if (shell) {
           shell.style.setProperty("--p", latestProgress.toFixed(4));
           shell.style.setProperty("--sp", stageProgress.toFixed(4));
-          shell.style.setProperty("--ink-p", inkProgress.toFixed(4));
-          shell.style.setProperty("--ink-visible", inkVisible.toFixed(4));
           shell.style.setProperty("--turn", `${latestProgress * 720}deg`);
           shell.style.setProperty("--turn-rev", `${latestProgress * -720}deg`);
           shell.style.setProperty("--drift", `${stageProgress * 150}px`);
           shell.style.setProperty("--read-scale", Math.max(0.06, latestProgress).toFixed(4));
           shell.style.setProperty("--read-top", `${latestProgress * 108}px`);
-        }
-
-        if (inkVideo && Number.isFinite(inkVideo.duration) && inkVideo.duration > 0) {
-          const startOffset = Math.min(0.03, Math.max(0, inkVideo.duration - 0.3));
-          const endGuard = 0.06;
-          const usableDuration = Math.max(0.1, inkVideo.duration - startOffset - endGuard);
-          inkTargetTime = startOffset + Math.min(0.995, inkProgress) * usableDuration;
         }
 
         if (percent !== lastPercent) {
@@ -402,38 +388,6 @@ function useMotionSystem(setProgress: (progress: number) => void) {
       const nativeProgress = Math.min(1, Math.max(0, root.scrollTop / maxScroll));
       syncProgress(nativeProgress);
     };
-
-    const updateInkVideo = () => {
-      if (!inkVideo || !Number.isFinite(inkVideo.duration) || inkVideo.duration <= 0) return;
-
-      const diff = inkTargetTime - inkCurrentTime;
-      const easedStep = diff * (reduceMotion ? 1 : 0.14);
-      const maxStep = reduceMotion ? Math.abs(diff) : 0.12;
-      inkCurrentTime += Math.max(-maxStep, Math.min(maxStep, easedStep));
-
-      if (Math.abs(inkVideo.currentTime - inkCurrentTime) > 0.018) {
-        try {
-          inkVideo.currentTime = Math.max(0, Math.min(inkVideo.duration - 0.04, inkCurrentTime));
-        } catch {
-          // Browsers can reject seeks before the video metadata is ready.
-        }
-      }
-    };
-
-    if ("scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
-    }
-
-    if (!window.location.hash) {
-      const resetScroll = () => {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      };
-      resetScroll();
-      requestAnimationFrame(resetScroll);
-      window.setTimeout(resetScroll, 80);
-    }
 
     if (canSmoothScroll) {
       lenis = new Lenis({
@@ -460,32 +414,6 @@ function useMotionSystem(setProgress: (progress: number) => void) {
 
     const ctx = gsap.context(() => {
       const cardSelector = ".stat-card, .asset-specimen, .proof-card, .venture-card, .timeline-item, .role-card, .skill-card, .case-index, .qr-specimen";
-      inkVideo = document.querySelector<HTMLVideoElement>(".ink-scroll-video");
-      if (inkVideo) {
-        inkVideo.pause();
-        inkVideo.loop = false;
-        inkVideo.muted = true;
-
-        const primeInkVideo = () => {
-          if (!inkVideo || !Number.isFinite(inkVideo.duration) || inkVideo.duration <= 0) return;
-          inkCurrentTime = Math.min(0.03, Math.max(0, inkVideo.duration - 0.3));
-          inkTargetTime = inkCurrentTime;
-          try {
-            inkVideo.currentTime = inkCurrentTime;
-          } catch {
-            // Browsers can reject seeks before the video is fully ready.
-          }
-        };
-
-        if (inkVideo.readyState >= 1) {
-          primeInkVideo();
-        } else {
-          inkVideo.addEventListener("loadedmetadata", primeInkVideo, { once: true });
-        }
-
-        gsap.ticker.add(updateInkVideo);
-      }
-
       const master = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -792,7 +720,6 @@ function useMotionSystem(setProgress: (progress: number) => void) {
       if (progressFrame) window.cancelAnimationFrame(progressFrame);
       window.removeEventListener("scroll", syncFromNativeScroll);
       window.removeEventListener("resize", syncFromNativeScroll);
-      gsap.ticker.remove(updateInkVideo);
       if (lenis) {
         gsap.ticker.remove(rafLenis);
         lenis.destroy();
@@ -988,16 +915,6 @@ function CinematicStarfall({ activeStage }: { activeStage: number }) {
 
   return (
     <div className={`starfall-system starfall-stage-${displayStage}`} aria-hidden="true">
-      <div className="ink-scroll-field">
-          <video
-            className="ink-scroll-video"
-            src="./ink-drop-main-alpha.webm?v=1"
-            muted
-            playsInline
-            preload="auto"
-        />
-      </div>
-
       <div className="starfall-prologue">
         <div className="prologue-stars">
           {Array.from({ length: 56 }).map((_, index) => {
