@@ -2866,8 +2866,8 @@ h3 {
 .starepoch-intro::before {
   z-index: 2;
   background:
-    radial-gradient(circle at 58% 42%, transparent 0 22%, rgba(244, 241, 232, 0.12) 34%, rgba(244, 241, 232, 0.78) 72%),
-    linear-gradient(90deg, rgba(244, 241, 232, 0.9), rgba(244, 241, 232, 0.28) 46%, rgba(244, 241, 232, 0.84));
+    radial-gradient(circle at 58% 42%, transparent 0 20%, rgba(244, 241, 232, 0.24) 46%, rgba(244, 241, 232, 0.92) 80%),
+    linear-gradient(90deg, rgba(244, 241, 232, 0.96), rgba(244, 241, 232, 0.38) 46%, rgba(244, 241, 232, 0.94));
   mix-blend-mode: normal;
 }
 
@@ -2881,19 +2881,19 @@ h3 {
 
 .starepoch-intro-video {
   position: absolute;
-  inset: -14%;
+  inset: -24%;
   z-index: 1;
-  width: 128%;
-  height: 128%;
+  width: 148%;
+  height: 148%;
   object-fit: cover;
   border: 0;
   outline: 0;
   box-shadow: none;
-  opacity: 0.74;
+  opacity: 0.66;
   filter: saturate(0.78) contrast(1.02) brightness(1.12);
   transform: translate3d(0, calc(var(--sp) * -18px), 0) scale(1.06);
-  mask-image: radial-gradient(ellipse 74% 82% at 55% 50%, #000 0 66%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 74% 82% at 55% 50%, #000 0 66%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+  mask-image: radial-gradient(ellipse 56% 68% at 55% 50%, #000 0 50%, rgba(0, 0, 0, 0.42) 68%, transparent 86%);
+  -webkit-mask-image: radial-gradient(ellipse 56% 68% at 55% 50%, #000 0 50%, rgba(0, 0, 0, 0.42) 68%, transparent 86%);
   backface-visibility: hidden;
   will-change: transform, opacity;
 }
